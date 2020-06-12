@@ -1,0 +1,83 @@
+﻿/*Query 1:- query used for first insight*/
+#1:- What is the average number of invoices by BillingCounry?
+
+
+SELECT BillingCountry, round(AVG(Invoiceid),0) as NettInvoices
+From Invoice
+JOIN Customer
+ON Invoice.CustomerId = Customer.CustomerId
+GROUP BY BillingCountry
+ORDER BY NettInvoices DESC
+Limit 10;
+
+
+
+
+/*Query 2:- query used for third insight*/
+#2:- What is the total earnings received by top 10 artists?
+
+
+SELECT
+  Artist.Name,
+  SUM(InvoiceLine.UnitPrice * InvoiceLine.Quantity) AS ArtistEarnings
+FROM Invoice
+JOIN InvoiceLine
+  ON InvoiceLine.InvoiceId = Invoice.InvoiceId
+JOIN Track
+  ON Track.TrackId = InvoiceLine.TrackId
+JOIN Album
+  ON Track.AlbumId = Album.AlbumId
+JOIN Artist
+  ON Album.ArtistId = Artist.ArtistId
+GROUP BY Artist.ArtistId
+ORDER BY ArtistEarnings DESC
+LIMIT 10;
+
+
+
+
+
+
+
+
+
+
+
+
+/*Query 3:- query used for second insight*/
+#3:- What is the amount spend by top 5 artists?
+
+
+SELECT
+  Artist.ArtistId,
+  Artist.Name,
+  COUNT(Artist.ArtistId) AS Songs
+FROM Artist
+JOIN Album
+  ON Artist.ArtistId = Album.ArtistId
+JOIN Track
+  ON Album.AlbumId = Track.AlbumId
+JOIN Genre
+  ON Track.GenreId = Genre.GenreId
+WHERE Genre.Name = 'Rock'
+GROUP BY Artist.Name
+ORDER BY Songs DESC
+LIMIT 10;
+
+
+
+
+
+
+/*Query 4:-query used for fourth insight*/
+#4:- What is the UnitPrice per Track?
+
+
+SELECT
+  UnitPrice,
+  COUNT(TrackId) AS Number
+FROM Track
+JOIN Album
+  ON Track.AlbumId = Album.AlbumId
+GROUP BY UnitPrice
+ORDER BY Number ASC;
